@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="page-title mb-0">{% if task and task.id %}編輯任務{% else %}新增任務{% endif %}</h2>
+                <a href="{{ url_for('tasks.index') }}" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>返回</a>
+            </div>
+
+            <form action="{{ url_for('tasks.edit', id=task.id) if task and task.id else url_for('tasks.create') }}" method="POST">
+                <div class="mb-4">
+                    <label for="title" class="form-label text-white fw-bold">任務標題 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control form-control-lg" id="title" name="title" value="{{ task.title if task else '' }}" required placeholder="例如：完成季報撰寫">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="description" class="form-label text-white fw-bold">詳細描述</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="補充任務細節...">{{ task.description if task and task.description else '' }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="due_date" class="form-label text-white fw-bold">到期日</label>
+                        <input type="date" class="form-control" id="due_date" name="due_date" value="{{ task.due_date if task and task.due_date else '' }}">
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="category" class="form-label text-white fw-bold">分類 / 標籤</label>
+                        <input type="text" class="form-control" id="category" name="category" value="{{ task.category if task and task.category else '' }}" placeholder="例如：工作, 個人">
+                    </div>
+                </div>
+
+                {% if task and task.id %}
+                <div class="mb-5">
+                    <label for="status" class="form-label text-white fw-bold">任務狀態</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="pending" {% if task.status == 'pending' %}selected{% endif %}>待處理</option>
+                        <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>進行中</option>
+                        <option value="completed" {% if task.status == 'completed' %}selected{% endif %}>已完成</option>
+                    </select>
+                </div>
+                {% endif %}
+
+                <div class="d-grid mt-2">
+                    <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                        <i class="fa-solid fa-save me-2"></i>{% if task and task.id %}儲存變更{% else %}建立任務{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
